@@ -17,7 +17,7 @@ async function run()
     try{
         await client.connect();
         const itemCollection=client.db('warehouseItems').collection('items')
-        app.get('/item',async(req,res)=>{
+        app.get('/inventory',async(req,res)=>{
             const query={};
             const cursor=itemCollection.find(query)
             const items=await cursor.toArray();
@@ -29,10 +29,18 @@ async function run()
             const item=await itemCollection.findOne(query)
             res.send(item)
         })
-        app.post('/item',async(req,res)=>{
+        app.post('/inventory',async(req,res)=>{
             const newItem=req.body;
             const result=await itemCollection.insertOne(newItem);
             res.send(result)
+        })
+        app.delete('/inventory/:id',async(req,res)=>
+        {
+            const id=req.params.id;
+            console.log(id)
+            const query={_id:ObjectId(id)};
+            const result=await itemCollection.deleteOne(query)
+            res.send(result);
         })
      
     }
