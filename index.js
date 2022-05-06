@@ -23,19 +23,21 @@ async function run()
             const items=await cursor.toArray();
             res.send(items);
         })
-        app.get('/inventory/:email',async(req,res)=>{
-            const email=req.params.email;
+        app.get('/inventory/:id',async(req,res)=>{
+            const id=req.params.id
+            const query={_id:ObjectId(id)}
+            const item=await itemCollection.findOne(query)
+            res.send(item)
+        })
+        app.get('/myitem',async(req,res)=>{
+            const email=req.query.email;
+            console.log(email)
             const query={email:email};
             const cursor=itemCollection.find(query)
             const items=await cursor.toArray();
             res.send(items);
         })
-        app.get('/inventory/:id',async(req,res)=>{
-            const id=req.params.id;
-            const query={_id:ObjectId(id)}
-            const item=await itemCollection.findOne(query)
-            res.send(item)
-        })
+    
         app.post('/inventory',async(req,res)=>{
             const newItem=req.body;
             const result=await itemCollection.insertOne(newItem);
@@ -56,21 +58,7 @@ async function run()
           const result =await itemCollection.updateOne(filter,updateDoc,options)
           res.send(result)
         })
-        // app.put('/inventory/:id',async(req,res)=>
-        // {
-        //   const id=req.params.id;
-        //   const updateQuantity=req.body;
-        //   const filter={_id:ObjectId(id)}
-        //   const options={upsert:true}
-        //   const updateDoc={
-        //     $set:
-        //     {
-        //         quantity:updateQuantity.quantity
-        //     }
-        //   };
-        //   const result =await itemCollection.updateOne(filter,updateDoc,options)
-        //   res.send(result)
-        // })
+     
         
         
         app.delete('/inventory/:id',async(req,res)=>
